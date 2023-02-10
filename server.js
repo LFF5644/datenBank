@@ -118,7 +118,20 @@ function onConnection(connection){
 
 const config=readConf(configFileName);
 if(!config){
-	console.log("config is null");
+	console.log("\nPLEASE OPEN THE CONFIG ("+configFileName+") AND EDIT IT THIS IS THE DEFAULT SETTINGS!");
+	fs.writeFileSync(
+		configFileName,
+		JSON.stringify(
+			{
+				ip:"127.0.0.1",
+				port:8080,
+			},
+			null,
+			2,
+		)
+			.split("  ")
+			.join("\t")
+	);
 	process.exit(-1);
 }
 

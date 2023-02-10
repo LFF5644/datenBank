@@ -6,6 +6,8 @@ Required:
 - [x] Webserver (backend only)
 - - [x] Webserver kann locale js programme ausführen (backend)
 - - [x] Backend Programme können besondere parameter bekommen
+- - [x] Use config file
+- - [x] Create config if not exist
 - - [ ] Server mit datenbank verbinden
 - [ ] Datenbank programmieren
 - - [ ] Webserver kann datenbank Einträge ändern/ansehen
