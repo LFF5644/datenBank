@@ -43,7 +43,6 @@ function parseSearch(search){
 	}
 	return vars;
 }
-
 function readConf(configFileName,json=true){
 	let config;
 	try{
@@ -62,13 +61,10 @@ function readConf(configFileName,json=true){
 	}
 	return config;
 }
-
 function onRequest(request,response){
-	//console.log("request:",Object.keys(request));
-	//console.log("response:",Object.keys(response));
-
-	const file=request.url.split("?")[0];
-	const args=request.url.split("?")[1];
+	const requestUrl=request.url.split("?");
+	const file=requestUrl[0];
+	const args=requestUrl[1];
 
 	console.log("Anfrage zu "+file);
 	
