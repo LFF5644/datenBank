@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const http=require("http");
 const fs=require("fs");
+const querystring=require("querystring");
 
 const serverfiles="server";
 const notAllowedChars=[
@@ -14,6 +15,33 @@ const notAllowedChars=[
 ];
 
 const globals={};
+
+function parseSearch(search){
+	if(!search){return{}}
+	const vars={}
+	search=search.split("&");
+	let v; // v = variable / parameter / argument
+	for(v of search){
+		if(v.includes("=")){
+			const variable=v.split("=");
+			let write;
+			try{
+				write=JSON.parse(querystring.unescape(variable[1]));
+			}
+			catch(e){
+				write=querystring.unescape(variable[1]);
+			}
+			vars[querystring.unescape(variable[0])]=write;
+		}else{
+			if(v.startsWith("!")){
+				vars[querystring.unescape(v.substring(1))]=false;
+			}else{
+				vars[querystring.unescape(v)]=true;
+			}
+		}
+	}
+	return vars;
+}
 
 function onRequest(request,response){
 	//console.log("request:",Object.keys(request));
@@ -53,6 +81,7 @@ function onRequest(request,response){
 	//script=`((globals,response)=>{${script}})(globals,response);`
 	let result;
 	try{
+		const input=parseSearch(args);
 		result=eval(script);
 	}catch(e){
 		console.log("cant execute "+file+", ERROR: "+e);
@@ -68,6 +97,6 @@ function onConnection(connection){
 }
 
 const server=http.createServer(onRequest);
-server.listen(8080,"127.0.0.1");
+server.listen(8080,"192.168.178.48");
 server.on("connection",onConnection);
-console.log("Server LÄUFT ...");
+console.log("Server gestartet ...");
