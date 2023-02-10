@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<title>[code] [msg]</title>
+<meta charset="utf-8">
+<meta name=viewport content="width=device-width">
+<body style="font-family: Arial;">
+
+<h1>
+	HTTP
+	<span style="color:red;">
+		[code]
+	</span>
+	[msg]
+</h1>
+
+<p><i>[info]</i></p>
+<ul id="fix"></ul>
+
+<hr>
+<footer>
+<p>
+	<span style="color:red;">
+		DATENBANK
+	</span> 
+	ON 
+	<a href="/">
+		<script>
+			document.write(String(location.host).toUpperCase())
+		</script>
+	</a>
+	<br>
+	<span style="color:green;">
+		Server
+	</span> 
+	By 
+	<attr 
+		style="color:green;"
+		title="LFF5644 or LFF"
+	>
+		Lando Fernandez-Falk
+	</attr>
+</p>
+</footer>
+
+<script>
+	console.log("HTTP [code]: [msg]");
+
+	const code=[code];
+	const msg="[msg]";
+	const info="[info]";
+	const fix=[fix];
+	const alertText=[alert];
+
+	const element_fix=document.getElementById("fix");
+
+	if(fix.length>0){
+		element_fix.innerHTML=fix
+			.map(item=>"<li>"+item+"</li>")
+			.join("\n")
+	}
+	if(alertText){
+		alert("HTTP [code]: [msg]\n"+alertText);
+	}
+	</script>
+</body>
+</html>

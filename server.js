@@ -5,6 +5,7 @@ const querystring=require("querystring");
 
 const serverfiles="server";
 const configFileName="config_server.json";
+const getStatusCodeHtml="error.html";
 const notAllowedChars=[
 	"..",
 	"~",
@@ -61,6 +62,56 @@ function readConf(configFileName,json=true){
 	}
 	return config;
 }
+function setStatusCode(response,code,alertText=null){
+	let msg="";
+	let info="";
+	let fix=[];
+
+	switch(code){
+		case 400:
+			msg='Ungültige Anfrage';
+			info="gewünschten Server Parameter nicht übergeben oder falsches formart!"
+			fix=[
+				"Parameter stimmen nicht dem verlangtem formart überein",
+				"Parameter werden benötigt",
+				"Ungültige Zeichen nicht erlaubt"
+			]
+			break;
+		case 403:
+			msg="Verboten";
+			info="Nicht Erlaubt!";
+			fix=[
+				"Diese Aktion ist nicht erlaubt",
+				"Sie haben Keine rechte für diese Aktion",
+			];
+			break;
+		case 404:
+			msg="Datei nicht gefunden";
+			fix=[
+				"Rechtschreibung Prüfen",
+				"Prüfen ob Datei nicht verlegt wurde",
+			];
+			break;
+		case 500:
+			msg='Server Interner Fehler';
+			fix=[
+				"Fehler im Code beheben xD",
+			];
+			info="Programm konnte nicht ausgeführt werden!";
+			break;
+	}
+	const result=fs.readFileSync(getStatusCodeHtml,"utf-8")
+		.split("[msg]").join(!msg?"":msg)
+		.split("[code]").join(code)
+		.split("[info]").join(info)
+		.split("[fix]").join(JSON.stringify(fix))
+		.split("[alert]").join(JSON.stringify(alertText));
+
+	response.setHeader("Content-Type","text/html");
+	response.statusCode=code;
+	response.write(result);
+	response.end();
+}
 function onRequest(request,response){
 	const requestUrl=request.url.split("?");
 	const file=requestUrl[0];
@@ -74,9 +125,7 @@ function onRequest(request,response){
 
 	if(notAllowedChars.some(item=>file.includes(item))){// Wenn VERBOTENES Zeichen enthalten
 		console.log("user send not allowed chars!");
-		response.statusCode=400;
-		response.write("VERBOTENES ZEICHEN ENTHALTEN!");
-		response.end();
+		setStatusCode(response,400,"VERBOTENES ZEICHEN ENTHALTEN!");
 		return;
 	}
 	if(file=="/"){
@@ -88,9 +137,7 @@ function onRequest(request,response){
 	try{
 		script=fs.readFileSync(serverfiles+file,"utf-8");
 	}catch(e){
-		response.statusCode=404;
-		response.write("FILE CANT FOUND!");
-		response.end();
+		setStatusCode(response,404);
 		console.log("file cant found!");
 		return;
 	}
@@ -100,10 +147,8 @@ function onRequest(request,response){
 		const input=parseSearch(args);
 		result=eval(script);
 	}catch(e){
-		console.log("cant execute "+file+", ERROR: "+e);
-		response.statusCode=500;
-		response.write("CANT EXECUTE SERVER SCRIPT!\nError code: "+e);
-		response.end();
+		console.log("Interner Server Fehler 500: "+e);
+		setStatusCode(response,500,e);
 		return;
 	}
 	response.end();
