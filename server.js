@@ -4,6 +4,7 @@ const fs=require("fs");
 const querystring=require("querystring");
 
 const serverfiles="server";
+const configFileName="config_server.json";
 const notAllowedChars=[
 	"..",
 	"~",
@@ -41,6 +42,25 @@ function parseSearch(search){
 		}
 	}
 	return vars;
+}
+
+function readConf(configFileName,json=true){
+	let config;
+	try{
+		config=fs.readFileSync(configFileName);
+	}catch(e){
+		console.log("cant read config file "+configFileName);
+		return false;
+	}
+	if(!json){return config}
+
+	try{
+		config=JSON.parse(config);
+	}catch(e){
+		console.log("cant parse config file "+configFileName);
+		return false;
+	}
+	return config;
 }
 
 function onRequest(request,response){
@@ -96,7 +116,16 @@ function onConnection(connection){
 	console.log("Neue Verbindung");
 }
 
+const config=readConf(configFileName);
+if(!config){
+	console.log("config is null");
+	process.exit(-1);
+}
+
 const server=http.createServer(onRequest);
-server.listen(8080,"192.168.178.48");
+server.listen(
+	config.port,
+	config.ip,
+);
 server.on("connection",onConnection);
 console.log("Server gestartet ...");
