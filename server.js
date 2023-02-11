@@ -4,6 +4,7 @@ const fs=require("fs");
 const querystring=require("querystring");
 
 const serverfiles="server";
+const workspace="workspace";
 const configFileName="config_server.json";
 const getStatusCodeHtml="error.html";
 const notAllowedChars=[
@@ -43,6 +44,15 @@ function parseSearch(search){
 		}
 	}
 	return vars;
+}
+function makeDir(dir){
+	try{
+		fs.mkdirSync(dir);
+		return true;
+	}
+	catch(e){
+		return false;
+	}
 }
 function readConf(configFileName,json=true){
 	let config;
@@ -175,7 +185,7 @@ if(!config){
 	);
 	process.exit(-1);
 }
-
+makeDir(workspace);
 const server=http.createServer(onRequest);
 server.listen(
 	config.port,
