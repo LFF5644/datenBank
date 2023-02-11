@@ -13,21 +13,21 @@ if(globals.counter){
 }
 
 if(reset){
-	response.write("counter reset!\n")
+	response.write("counter reset!\n");
 	globals.counter=1;
 }
 
 if(save){
 	fs.writeFileSync(counterFile,String(globals.counter),"utf-8");
-	response.write("counter saved to file!\n")
+	response.write("counter saved to file!\n");
 }
 else if(load){
 	try{
 		globals.counter=Number(fs.readFileSync(counterFile,"utf-8"));
-		response.write("counter loaded from file!\n")
+		response.write("counter loaded from file!\n");
 	}
 	catch(e){
-		response.write("cant read file!\n")
+		response.write("cant read file!\n");
 	}
 }
 

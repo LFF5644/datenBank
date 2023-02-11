@@ -21,7 +21,7 @@ const globals={};
 
 function parseSearch(search){
 	if(!search){return{}}
-	const vars={}
+	const vars={};
 	search=search.split("&");
 	let v; // v = variable / parameter / argument
 	for(v of search){
@@ -85,7 +85,7 @@ function setStatusCode(response,code,alertText=null){
 				"Parameter stimmen nicht dem verlangtem formart überein",
 				"Parameter werden benötigt",
 				"Ungültige Zeichen nicht erlaubt"
-			]
+			];
 			break;
 		case 403:
 			msg="Verboten";
